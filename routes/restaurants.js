@@ -9,6 +9,11 @@ router.get(
   restaurantController.getAll
 );
 router.get(
+  "/allLocation",
+  passport.authenticate("jwt", { session: false }),
+  restaurantController.getAllByLocation
+);
+router.get(
   "/get/:id",
   passport.authenticate("jwt", { session: false }),
   restaurantController.getRestaurant

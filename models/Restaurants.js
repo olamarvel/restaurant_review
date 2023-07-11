@@ -11,6 +11,10 @@ const RestaurantsSchema = new Schema({
     type: String,
     required: true
   },
+  text:{
+    type:Strign,
+    required:true,
+  }
   avrating: {
     type: String,
     mininum: 0,
@@ -36,9 +40,40 @@ const RestaurantsSchema = new Schema({
     type: Number,
     default: 0,
     minimum: 0
+  }, 
+  location: {
+    latitude: {type: Number},
+    longitude: {type: Number}
   }
 });
 
 const Restaurants = mongoose.model("restaurants", RestaurantsSchema);
+
+RestaurantSchema.statics.findByDistance = function (lat, lon, dist) {
+  // Create a new promise
+  return new Promise(function (resolve, reject) {
+    // Find all restaurants in the database
+    Restaurant.find({}, function (err, restaurants) {
+      if (err) {
+        // Reject the promise if there is an error
+        reject(err);
+      } else {
+        // Filter the restaurants by distance
+        var result = restaurants.filter(function (restaurant) {
+          // Get the distance between the restaurant and the given coordinates
+          var distance = geolib.getDistance(
+            {latitude: lat, longitude: lon},
+            {latitude: restaurant.location.latitude, longitude: restaurant.location.longitude}
+          );
+          // Return true if the distance is less than or equal to the given distance
+          return distance <= dist;
+        });
+        // Resolve the promise with the filtered array
+        resolve(result);
+      }
+    });
+  });
+};
+
 
 module.exports = Restaurants;

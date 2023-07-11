@@ -10,6 +10,7 @@ const findAll = res => {
     return res.json(doc);
   });
 };
+
 exports.getAll = (req, res) => {
   findAll(res);
 };
@@ -18,6 +19,29 @@ exports.getRestaurant = (req, res) => {
   Restaurants.find(req.params.id, (err, doc) => {
     return res.json(doc);
   });
+};
+
+exports.getAllByLocation = async function (req, res) {
+  // Get the query parameters
+  var lat = req.query.lat;
+  var lon = req.query.lon;
+  var dist = req.query.dist;
+  // Validate the parameters
+  if (lat && lon && dist) {
+    // Find restaurants by distance using the model method
+    try {
+      // Await for the promise to resolve and assign the result to a variable
+      var restaurants = await Restaurant.findByDistance(lat, lon, dist);
+      // Send the result as JSON response
+      res.json(restaurants);
+    } catch (err) {
+      // Send an error message if there is an error
+      res.status(500).send('Something went wrong: ' + err);
+    }
+  } else {
+    // Send a bad request message if the parameters are missing or invalid
+    res.status(400).send('Bad request: missing or invalid parameters');
+  }
 };
 
 exports.addRestaurant = (req, res) => {
