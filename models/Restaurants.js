@@ -12,9 +12,9 @@ const RestaurantsSchema = new Schema({
     required: true
   },
   text:{
-    type:Strign,
+    type:String,
     required:true,
-  }
+  },
   avrating: {
     type: String,
     mininum: 0,
@@ -49,7 +49,7 @@ const RestaurantsSchema = new Schema({
 
 const Restaurants = mongoose.model("restaurants", RestaurantsSchema);
 
-RestaurantSchema.statics.findByDistance = function (lat, lon, dist) {
+RestaurantsSchema.statics.findByDistance = function (lat, lon, dist) {
   // Create a new promise
   return new Promise(function (resolve, reject) {
     // Find all restaurants in the database
